@@ -3,37 +3,45 @@ package pl.s221516.creditcard;
 import java.math.BigDecimal;
 
 public class CreditCard {
-    private BigDecimal balance;
-    private BigDecimal credit;
+    private BigDecimal cardLimit;
+    private BigDecimal currentBalance;
+
+
+    public BigDecimal getCurrentBalance() {
+        return currentBalance;
+    }
 
     public CreditCard(String cardNumber) {
 
     }
 
-    public void assignCredit(BigDecimal creditAmount)  {
-        if (isCreditAlreadyAssigned()) {
-            throw new LimitAssignedTwiceException();
-        }
-
-        if (creditAmount.compareTo(BigDecimal.valueOf(100)) < 0) {
+    public void assignLimit(BigDecimal creditAmount) {
+        if (isBelowLimitThreshold(creditAmount)) {
             throw new CreditBelowLimitException();
         }
-        this.balance = creditAmount;
-        this.credit = creditAmount;
-
-    }
-
-    private boolean isCreditAlreadyAssigned() {
-        return credit !=  null;
-    }
-
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public void withdraw(BigDecimal money) {
-        if (balance.compareTo(money) > 0) {
-            this.balance = balance.subtract(money);
+        if (cardLimit != null) {
+            throw new LimitAssignedTwiceException();
         }
+        this.cardLimit = creditAmount;
+        this.currentBalance = creditAmount;
+    }
+
+    private boolean isBelowLimitThreshold(BigDecimal creditAmount) {
+        return creditAmount.compareTo(BigDecimal.valueOf(100)) < 0;
+    }
+
+    public BigDecimal getCardLimit() {
+        return cardLimit;
+    }
+
+    private boolean isBelowCurrentBalanceThreshold(BigDecimal amountOfMoney) {
+        return currentBalance.compareTo(amountOfMoney) < 0;
+    }
+
+    public void withdraw(BigDecimal amountOfMoney){
+        if(isBelowCurrentBalanceThreshold(amountOfMoney)){
+            throw new WithdrawBelowLimitException();
+        }
+        currentBalance=currentBalance.subtract(amountOfMoney);
     }
 }
