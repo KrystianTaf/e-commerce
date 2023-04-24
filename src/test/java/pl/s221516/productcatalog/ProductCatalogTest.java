@@ -18,7 +18,7 @@ public class ProductCatalogTest {
         assertListIsEmpty(products);
     }
 
-    @Test
+    @org.junit.Test
     void itAllowsToAddProduct() {
         //Arrange
         ProductCatalog catalog = thereIsProductCatalog();
